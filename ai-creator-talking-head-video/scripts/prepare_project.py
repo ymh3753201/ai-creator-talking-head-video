@@ -229,6 +229,22 @@ def visual_generation_roles(assets: list[dict]) -> set[str]:
     return {str(asset.get("role", "")) for asset in assets}
 
 
+def model_adapter_disclosure(model: dict) -> dict:
+    return {
+        "model_key": model.get("key"),
+        "provider": model.get("provider"),
+        "model": model.get("model"),
+        "official_model": model.get("official_model", ""),
+        "provider_route": model.get("provider_route", ""),
+        "skill_adapter_status": model.get("skill_adapter_status", ""),
+        "adapter_contract_version": model.get("adapter_contract_version", ""),
+        "verification_level": model.get("verification_level", ""),
+        "adapter_supported_inputs": model.get("adapter_supported_inputs", []),
+        "adapter_unsupported_provider_features": model.get("adapter_unsupported_provider_features", []),
+        "adapter_notes": model.get("adapter_notes", ""),
+    }
+
+
 def paid_generation_blocking_reasons(
     model: dict,
     args,
@@ -247,6 +263,14 @@ def paid_generation_blocking_reasons(
     reasons = []
     if not model.get("enabled", True):
         reasons.append(f"Selected model route {model.get('key') or model.get('model')} is disabled pending provider verification.")
+    if model.get("skill_adapter_status") not in {
+        "supported_runtime_verified",
+        "supported_schema_verified",
+    }:
+        reasons.append(
+            f"Selected model route has skill_adapter_status={model.get('skill_adapter_status') or 'missing'}; "
+            "complete model-specific adapter mapping, validation, tests, and verification before paid generation."
+        )
     roles = visual_generation_roles(confirmed_assets + references)
     has_visual_source = bool(roles.intersection({"video_source", "first_frame", "segment_source", "avatar_reference", "scene_reference", "cover", "storyboard", "storyboard_sheet", "broll_reference"}))
     has_avatar_or_final_source = bool(roles.intersection({"video_source", "first_frame", "segment_source", "avatar_reference"}))
@@ -646,6 +670,7 @@ def build_plan_only_result(
         "ok": True,
         "plan_only": True,
         "model_key": model.get("key"),
+        "model_adapter": model_adapter_disclosure(model),
         "allowed_durations_seconds": model_allowed_durations(model),
         "delivery_max_seconds": duration,
         "minimum_paid_segment_count": minimum_paid_segment_count(duration, model),
@@ -1486,7 +1511,11 @@ def main() -> int:
             "skill": "ai-creator-talking-head-video",
             "model_key": model["key"],
             "model": model.get("model"),
+            "model_adapter": model_adapter_disclosure(model),
             "model_capabilities": {
+                "skill_adapter_status": model.get("skill_adapter_status", ""),
+                "adapter_supported_inputs": model.get("adapter_supported_inputs", []),
+                "adapter_unsupported_provider_features": model.get("adapter_unsupported_provider_features", []),
                 "supports_image_to_video": bool(model.get("supports_image_to_video")),
                 "supports_reference_images": bool(model.get("supports_reference_images")),
                 "max_reference_images": model.get("max_reference_images"),

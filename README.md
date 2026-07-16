@@ -41,6 +41,34 @@
 
 图片生成使用 Codex 内置 `image_gen`，不需要在本项目里配置单独的图片 API Key。
 
+## 当前适配的视频模型
+
+这个 Skill 不是“填写任意模型名称就能通用运行”的壳。当前适配的是以下精确模型路由：
+
+| 配置 Key | Provider / 模型 | 当前状态 | 已接入能力 | 重要限制 |
+| --- | --- | --- | --- | --- |
+| `grok_talking_head_basic` | 第三方 119337 `grok-video-1.5`，映射 xAI `grok-imagine-video-1.5` | 默认，已做本地真实项目验证 | 单张源图、生成式口播、4/6/8/10/12/15 秒配置槽位、480p/720p | 不接收外部音频，不支持多参考图；该第三方路由不声明 1080p |
+| `seedance_reference_video` | fal `bytedance/seedance-2.0/reference-to-video` | 可选，Provider Schema 已核对 | 多参考图片、可选音频条件、4–15 秒、最高 1080p | 当前 Skill 尚未接入 `video_urls` 视频参考输入；不保证逐帧精确口型 |
+| `multi_reference_creator_video` | 第三方 119337 `grok-image-video` | 默认禁用 | 配置草案 | 未完成精确路由的真实运行验证，不允许直接付费使用 |
+
+这里的“适配”指 Skill 已经理解该路由的输入、请求字段、时长、素材数量、轮询、结果下载和验收方式。模型官网写着支持某项能力，并不代表本 Skill 已经把该能力接入。
+
+### 切换其他模型前必须优化适配
+
+如果要切换 Kling、Veo、Sora、其他 Seedance 接口、其他 Grok 路由或未来的新模型，不能只修改 `model` 或 `base_url`。至少需要重新完成：
+
+1. 核对官方文档和实际 Provider 接口，记录资料来源与验证日期。
+2. 配置认证方式、生成地址、轮询地址和结果下载结构。
+3. 映射源图、多参考图、视频参考、音频、提示词和时长字段。
+4. 重新定义合法时长、比例、分辨率、素材数量和脚本上限。
+5. 根据模型能力调整首帧、参考图、音频和口型同步策略。
+6. 保持 Provider 零文字、双确认、素材哈希和付费次数保护。
+7. 增加模型专属 dry-run、配置校验和回归测试。
+8. 完成受控真实生成，检查口播、素材一致性、边界、字幕污染和最终 MP4。
+9. 验证完成前保持该模型 `enabled=false`，不得标记为正式兼容。
+
+完整适配合同见 [model-capabilities.md](ai-creator-talking-head-video/references/model-capabilities.md)。
+
 ## 安装
 
 ### 从 GitHub Release 安装

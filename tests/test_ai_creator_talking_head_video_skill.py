@@ -526,6 +526,9 @@ class TalkingHeadSkillValidationTests(unittest.TestCase):
         data = json.loads(result.stdout)
         selected = data["models"]["grok_talking_head_basic"]
         seedance = data["models"]["seedance_reference_video"]
+        disabled_multi_reference = data["models"]["multi_reference_creator_video"]
+        self.assertEqual(data["adapter_contract_version"], "1.1")
+        self.assertIn("exact configured model adapters", data["compatibility_notice"])
         self.assertEqual(data["selected_model"], "grok_talking_head_basic")
         self.assertEqual(data["selected_model_id"], "grok-video-1.5")
         self.assertEqual(data["selected_base_url"], "https://api.119337.xyz/v1")
@@ -549,10 +552,57 @@ class TalkingHeadSkillValidationTests(unittest.TestCase):
         self.assertTrue(selected["verified_at"])
         self.assertTrue(selected["provider_route"])
         self.assertIn("runtime_verified", selected["verification_level"])
-        self.assertFalse(data["models"]["multi_reference_creator_video"]["enabled"])
+        self.assertEqual(selected["skill_adapter_status"], "supported_runtime_verified")
+        self.assertIn("source_image", selected["adapter_supported_inputs"])
+        self.assertIn("external_audio_input", selected["adapter_unsupported_provider_features"])
+        self.assertEqual(seedance["skill_adapter_status"], "supported_schema_verified")
+        self.assertIn("audio", seedance["adapter_supported_inputs"])
+        self.assertIn("video_reference_input", seedance["adapter_unsupported_provider_features"])
+        self.assertFalse(disabled_multi_reference["enabled"])
+        self.assertEqual(
+            disabled_multi_reference["skill_adapter_status"],
+            "disabled_requires_runtime_verification",
+        )
         self.assertNotIn("4k", seedance["supported_resolutions"])
         self.assertNotIn("bitrate_mode", seedance["payload_defaults"])
         self.assertEqual(seedance["external_audio_alignment_level"], "reference_audio_conditioning_not_frame_accurate_guarantee")
+
+    def test_enabled_custom_model_cannot_claim_compatibility_without_adapter_verification(self):
+        from validate_config import validate_model
+
+        config = json.loads(CONFIG.read_text(encoding="utf-8"))
+        model = {
+            **config["models"]["grok_talking_head_basic"],
+            "skill_adapter_status": "custom_unverified",
+        }
+
+        issues = validate_model(model)
+
+        self.assertTrue(any("enabled model requires skill_adapter_status" in issue for issue in issues))
+
+    def test_duration_plan_discloses_exact_model_adapter_status(self):
+        result = run_cmd([
+            "python3", str(SCRIPTS / "prepare_project.py"),
+            "--name", "adapter-disclosure",
+            "--content-mode", "avatar_talking_head",
+            "--platform", "douyin",
+            "--language", "zh",
+            "--duration", "15",
+            "--script-text", READY_15S_SCRIPT,
+            "--duration-plan-only",
+        ])
+        plan = json.loads(result.stdout)
+
+        self.assertEqual(plan["model_key"], "grok_talking_head_basic")
+        self.assertEqual(
+            plan["model_adapter"]["skill_adapter_status"],
+            "supported_runtime_verified",
+        )
+        self.assertEqual(plan["model_adapter"]["model"], "grok-video-1.5")
+        self.assertIn(
+            "external_audio_input",
+            plan["model_adapter"]["adapter_unsupported_provider_features"],
+        )
 
     def test_project_brief_exposes_intake_routing_and_source_trace_fields(self):
         data = json.loads((SKILL / "assets" / "templates" / "project-brief.example.json").read_text(encoding="utf-8"))
@@ -606,6 +656,9 @@ class TalkingHeadSkillValidationTests(unittest.TestCase):
             self.assertEqual(plan["speech_fidelity_mode"], "critical_facts_exact")
             self.assertEqual(plan["aspect_ratio"], "9:16")
             self.assertEqual(plan["resolution"], "1080p")
+            self.assertEqual(plan["model_adapter"]["skill_adapter_status"], "supported_runtime_verified")
+            self.assertIn("source_image", plan["model_adapter"]["adapter_supported_inputs"])
+            self.assertEqual(plan["model_capabilities"]["skill_adapter_status"], "supported_runtime_verified")
             self.assertTrue(plan["avatar_reference"])
             self.assertTrue(plan["script_file"])
             self.assertIn("选题", plan["script_text"])

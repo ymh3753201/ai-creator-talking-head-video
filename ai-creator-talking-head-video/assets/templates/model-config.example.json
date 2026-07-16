@@ -1,8 +1,15 @@
 {
+  "adapter_contract_version": "1.1",
+  "compatibility_notice": "This Skill supports exact configured model adapters, not arbitrary model names. Changing provider, endpoint, or model requires capability mapping, payload adaptation, validation, and new verification evidence before paid use.",
   "default_model": "grok_talking_head_basic",
   "models": {
     "grok_talking_head_basic": {
       "enabled": true,
+      "skill_adapter_status": "supported_runtime_verified",
+      "adapter_contract_version": "1.1",
+      "adapter_supported_inputs": ["source_image", "prompt", "duration", "aspect_ratio", "resolution"],
+      "adapter_unsupported_provider_features": ["external_audio_input", "multiple_reference_images", "text_to_video", "1080p_on_this_gateway"],
+      "adapter_notes": "Default adapter. Supports the tested 119337 grok-video-1.5 single-image generated-dialogue route. The source image becomes the first frame.",
       "provider": "119337",
       "base_url": "https://api.119337.xyz/v1",
       "generation_path": "/video/generations",
@@ -51,6 +58,11 @@
     },
     "multi_reference_creator_video": {
       "enabled": false,
+      "skill_adapter_status": "disabled_requires_runtime_verification",
+      "adapter_contract_version": "1.1",
+      "adapter_supported_inputs": ["source_image", "reference_images", "prompt", "duration", "aspect_ratio", "resolution"],
+      "adapter_unsupported_provider_features": ["external_audio_input", "video_reference_input"],
+      "adapter_notes": "Configuration draft only. Keep disabled until the exact provider alias, payload, polling response, legal durations, and final output are runtime-verified.",
       "provider": "119337",
       "base_url": "https://api.119337.xyz/v1",
       "generation_path": "/video/generations",
@@ -98,6 +110,11 @@
     },
     "seedance_reference_video": {
       "enabled": true,
+      "skill_adapter_status": "supported_schema_verified",
+      "adapter_contract_version": "1.1",
+      "adapter_supported_inputs": ["source_image", "reference_images", "audio", "prompt", "duration", "aspect_ratio", "resolution"],
+      "adapter_unsupported_provider_features": ["video_reference_input", "frame_accurate_external_audio_mouth_sync_guarantee"],
+      "adapter_notes": "Optional fal adapter. The current Skill maps image_urls and audio_urls, but does not yet expose the Provider's video_urls reference capability.",
       "provider": "fal_queue",
       "base_url": "https://queue.fal.run",
       "generation_path": "/bytedance/seedance-2.0/reference-to-video",

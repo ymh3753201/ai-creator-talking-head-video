@@ -74,6 +74,35 @@ class TalkingHeadOpenSourceReleaseTests(unittest.TestCase):
         self.assertNotIn("replace-with-lipsync-model", serialized)
         self.assertNotIn("lipsync_audio_avatar", config["models"])
 
+    def test_model_compatibility_and_switching_warning_is_prominent(self):
+        readme = (ROOT / "README.md").read_text(encoding="utf-8")
+        skill = (SKILL / "SKILL.md").read_text(encoding="utf-8")
+        reference = (SKILL / "references" / "model-capabilities.md").read_text(encoding="utf-8")
+        config = json.loads((SKILL / "assets" / "templates" / "model-config.example.json").read_text(encoding="utf-8"))
+        combined = "\n".join((readme, skill, reference))
+
+        for marker in (
+            "当前适配的视频模型",
+            "Bundled Model Compatibility",
+            "Supported Adapter Matrix",
+            "Switching Models Is An Adapter Migration",
+            "Changing only `model`, `base_url`",
+            "skill_adapter_status",
+            "adapter_unsupported_provider_features",
+        ):
+            self.assertIn(marker, combined, marker)
+
+        self.assertEqual(config["default_model"], "grok_talking_head_basic")
+        self.assertEqual(
+            config["models"]["grok_talking_head_basic"]["skill_adapter_status"],
+            "supported_runtime_verified",
+        )
+        self.assertEqual(
+            config["models"]["seedance_reference_video"]["skill_adapter_status"],
+            "supported_schema_verified",
+        )
+        self.assertFalse(config["models"]["multi_reference_creator_video"]["enabled"])
+
     def test_removed_legacy_files_and_symbols_do_not_return(self):
         self.assertFalse((SKILL / "evals" / "fixtures" / "first-response-atomic-primary.json").exists())
         forbidden = [

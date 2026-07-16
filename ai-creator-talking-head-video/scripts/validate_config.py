@@ -20,6 +20,11 @@ from _common import (
 
 
 REQUIRED_FIELDS = (
+    "skill_adapter_status",
+    "adapter_contract_version",
+    "adapter_supported_inputs",
+    "adapter_unsupported_provider_features",
+    "adapter_notes",
     "provider",
     "base_url",
     "generation_path",
@@ -50,6 +55,15 @@ REQUIRED_FIELDS = (
     "external_audio_alignment_level",
 )
 
+ENABLED_ADAPTER_STATUSES = {
+    "supported_runtime_verified",
+    "supported_schema_verified",
+}
+DISABLED_ADAPTER_STATUSES = {
+    "disabled_requires_runtime_verification",
+    "custom_unverified",
+}
+
 
 def validate_model(model: dict) -> list[str]:
     issues = []
@@ -77,6 +91,23 @@ def validate_model(model: dict) -> list[str]:
         issues.append("supports_audio_input requires audio_field")
     if bool(model.get("supports_lipsync")) and not (bool(model.get("supports_audio_input")) or bool(model.get("supports_script_to_speech"))):
         issues.append("supports_lipsync requires audio input or script-to-speech support")
+    adapter_status = str(model.get("skill_adapter_status") or "")
+    all_adapter_statuses = ENABLED_ADAPTER_STATUSES | DISABLED_ADAPTER_STATUSES
+    if adapter_status not in all_adapter_statuses:
+        issues.append(f"unknown skill_adapter_status: {adapter_status!r}")
+    if model.get("enabled", True) and adapter_status not in ENABLED_ADAPTER_STATUSES:
+        issues.append(
+            "enabled model requires skill_adapter_status supported_runtime_verified "
+            "or supported_schema_verified"
+        )
+    if not isinstance(model.get("adapter_supported_inputs"), list) or not model.get("adapter_supported_inputs"):
+        issues.append("adapter_supported_inputs must be a non-empty list")
+    if not isinstance(model.get("adapter_unsupported_provider_features"), list):
+        issues.append("adapter_unsupported_provider_features must be a list")
+    if not str(model.get("adapter_contract_version") or "").strip():
+        issues.append("adapter_contract_version must be non-empty")
+    if not str(model.get("adapter_notes") or "").strip():
+        issues.append("adapter_notes must be non-empty")
     if model.get("enabled", True):
         try:
             require_secure_api_url(str(model.get("base_url") or ""))
@@ -104,6 +135,8 @@ def main() -> int:
         errors = []
         report = {
             "config": str(Path(args.config).resolve()) if args.config else "default",
+            "adapter_contract_version": config.get("adapter_contract_version"),
+            "compatibility_notice": config.get("compatibility_notice"),
             "default_model": config.get("default_model"),
             "selected_model": selected.get("key"),
             "selected_model_id": selected.get("model"),
@@ -116,8 +149,15 @@ def main() -> int:
         }
         for key, model in (config.get("models") or {}).items():
             issues = validate_model(model)
+            if model.get("adapter_contract_version") != config.get("adapter_contract_version"):
+                issues.append("model adapter_contract_version must match config adapter_contract_version")
             report["models"][key] = {
                 "enabled": model.get("enabled", True),
+                "skill_adapter_status": model.get("skill_adapter_status", ""),
+                "adapter_contract_version": model.get("adapter_contract_version", ""),
+                "adapter_supported_inputs": model.get("adapter_supported_inputs", []),
+                "adapter_unsupported_provider_features": model.get("adapter_unsupported_provider_features", []),
+                "adapter_notes": model.get("adapter_notes", ""),
                 "provider": model.get("provider"),
                 "model": model.get("model"),
                 "official_model": model.get("official_model", ""),

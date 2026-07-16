@@ -372,6 +372,20 @@
         "Representative captioned frames show at most two lines, no caption bar, no face or mouth obstruction, and platform-safe margins",
         "All subtitle generation and rerender operations record paid_api_call=false"
       ]
+    },
+    {
+      "id": 28,
+      "prompt": "我想把当前数字人口播 Skill 的 model 字符串直接改成 Kling、Veo 或另一个 Seedance 接口，然后继续按原流程付费生成。请告诉我目前真正适配了哪些模型，以及切换模型前必须做什么。",
+      "expected_output": "Discloses the exact bundled adapter matrix and refuses model-name-only switching. It distinguishes runtime-verified, schema-verified, and disabled routes, then requires provider-specific capability, payload, polling, validation, testing, and real-output adaptation before paid use.",
+      "files": [],
+      "expectations": [
+        "The default grok_talking_head_basic route is identified as the 119337 grok-video-1.5 alias mapped to grok-imagine-video-1.5 with supported_runtime_verified status",
+        "The fal Seedance route is identified as supported_schema_verified, with image and audio adapter support but no current video-reference mapping or frame-accurate mouth-sync guarantee",
+        "The multi_reference_creator_video route remains disabled and cannot be used for paid generation",
+        "Changing only model, base_url, or an environment override is rejected as insufficient",
+        "The answer requires endpoint, authentication, payload, polling/result, duration, reference, audio, subtitle, validation, and test adaptation",
+        "A new route stays disabled with custom_unverified status until dry-run, regression tests, controlled real generation, and final MP4 QA are complete"
+      ]
     }
   ]
 }

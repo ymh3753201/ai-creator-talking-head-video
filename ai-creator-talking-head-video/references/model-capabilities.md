@@ -2,6 +2,8 @@
 
 ## Contents
 
+- Supported adapter matrix
+- Switching models is an adapter migration
 - Required fields and planning rules
 - Duration splitting and Grok/xAI route notes
 - Image, lip-sync, and payload routing
@@ -9,10 +11,54 @@
 
 This skill is model-config driven. Use `assets/templates/model-config.example.json` or the user's selected config as the source of truth.
 
+## Supported Adapter Matrix
+
+Model capability and Skill adapter capability are different layers. A Provider may support an input that the current Skill does not map. Treat the narrower Skill adapter scope as the production boundary.
+
+| Model key | Exact configured route | `skill_adapter_status` | Current Skill adapter scope | Not currently adapted or guaranteed |
+| --- | --- | --- | --- | --- |
+| `grok_talking_head_basic` | 119337 `grok-video-1.5`, mapped to xAI `grok-imagine-video-1.5` | `supported_runtime_verified` | One source image, generated dialogue, configured discrete durations, 480p/720p, source image as first frame | External audio, multiple reference images, text-to-video, 1080p on this gateway |
+| `seedance_reference_video` | fal `bytedance/seedance-2.0/reference-to-video` | `supported_schema_verified` | Source/reference images, optional audio conditioning, 4-15 second range, up to 1080p | Provider `video_urls` references are not mapped; frame-accurate external-audio mouth sync is not guaranteed |
+| `multi_reference_creator_video` | 119337 `grok-image-video` | `disabled_requires_runtime_verification` | Configuration draft only | Paid use, stable payload compatibility, legal duration claims, final-output acceptance |
+
+Always show the selected model key, Provider/model id, adapter status, verification level, supported adapter inputs, and unsupported Provider features in a production proposal. Do not describe a disabled or schema-only route as runtime-verified.
+
+## Switching Models Is An Adapter Migration
+
+Do not switch models by changing only `model`, `base_url`, or an environment override. A compatible adapter binds all of the following:
+
+1. Provider authentication and private key environment variables.
+2. Generation endpoint, polling endpoint, result endpoint, terminal states, request id, and output URL mapping.
+3. Source-image, reference-image, video-reference, audio, prompt, aspect-ratio, resolution, and duration fields.
+4. Payload formats such as URL strings, URL objects, arrays, data URIs, or file ids.
+5. Legal durations, maximum script length, reference limits, supported ratios, supported resolutions, and source-frame behavior.
+6. Generated-dialogue, script-to-speech, external-audio, lip-sync, and alignment guarantees.
+7. Provider zero-text prompts, subtitle exclusion, two-confirmation asset binding, and paid-request caps.
+8. Dry-run records, contract digests, job polling, download verification, stitching, and final review.
+
+Use this migration sequence:
+
+1. Add the new model as `enabled=false` with `skill_adapter_status=custom_unverified`.
+2. Cite official and exact Provider documentation in `capability_source`; record `verified_at`, `provider_route`, and `verification_level`.
+3. Implement every required payload and polling/result mapping instead of reusing fields by name similarity.
+4. Add config validation and dry-run payload tests for each supported input mode.
+5. Add regression tests for duration, references, audio, subtitles, secrets, retry blocking, and final delivery.
+6. Run no-key config validation and preflight.
+7. Run one controlled real generation for each production input mode and inspect the real MP4.
+8. Change status to `supported_schema_verified` only after exact schema verification, or `supported_runtime_verified` after controlled runtime evidence.
+9. Keep unsupported Provider features in `adapter_unsupported_provider_features`; do not advertise them until they are implemented and tested.
+
+If a model cannot fit the existing adapter contract cleanly, create a provider-specific adapter module rather than adding scattered special cases to `generate_video.py` and `poll_video.py`.
+
 ## Required Capability Fields
 
 Each model entry should define:
 
+- `skill_adapter_status`;
+- `adapter_contract_version`;
+- `adapter_supported_inputs`;
+- `adapter_unsupported_provider_features`;
+- `adapter_notes`;
 - `supports_image_to_video`;
 - `supports_reference_images`;
 - `supports_reference_to_video`;
@@ -107,7 +153,7 @@ If the user provides audio and explicitly asks the generated avatar to follow th
 
 `external_audio_lipsync=true` means the route can condition generation on uploaded audio. It does not automatically prove frame-accurate mouth matching. Use `external_audio_alignment_level` to distinguish reference-audio conditioning from a verified frame-accurate service, and confirm quality on the real output.
 
-## Evidence Rechecked 2026-07-15
+## Evidence Rechecked 2026-07-16
 
 - xAI `grok-imagine-video-1.5` is image-to-video and the source image becomes the first frame: `https://docs.x.ai/developers/models/grok-imagine-video-1.5`.
 - xAI reference-to-video uses `grok-imagine-video`, supports up to 7 reference images, and caps that mode at 10 seconds; 1.5 does not support reference-to-video: `https://docs.x.ai/developers/model-capabilities/video/reference-to-video`.
