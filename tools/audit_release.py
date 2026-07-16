@@ -32,6 +32,7 @@ REQUIRED_FILES = (
     "LICENSE",
     ".gitignore",
     "CONTRIBUTING.md",
+    "CODE_OF_CONDUCT.md",
     "SECURITY.md",
     ".github/workflows/tests.yml",
     f"{SKILL_NAME}/SKILL.md",

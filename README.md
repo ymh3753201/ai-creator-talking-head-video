@@ -232,7 +232,7 @@ unzip -t dist/ai-creator-talking-head-video.skill
 
 ## 贡献
 
-欢迎提交 Issue 和 Pull Request。开始前请阅读 [CONTRIBUTING.md](CONTRIBUTING.md)。
+欢迎提交 Issue 和 Pull Request。开始前请阅读 [CONTRIBUTING.md](CONTRIBUTING.md) 和 [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)。
 
 ## License
 
