@@ -1,0 +1,6 @@
+interface:
+  display_name: "AI Creator Talking Head Video"
+  short_description: "Plan and produce guarded AI talking-head videos"
+  default_prompt: "Use $ai-creator-talking-head-video to plan and produce a platform-ready digital-human talking-head video."
+policy:
+  allow_implicit_invocation: true

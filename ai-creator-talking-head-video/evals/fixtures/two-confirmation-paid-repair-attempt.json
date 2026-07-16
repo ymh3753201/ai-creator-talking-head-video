@@ -1,0 +1,63 @@
+{
+  "trace_id": "two-confirmation-paid-repair-attempt",
+  "events": [
+    {
+      "type": "assistant_response",
+      "stage": "awaiting_plan_confirmation",
+      "surface": "primary_assistant_response",
+      "content": [
+        {
+          "type": "proposal_text",
+          "text": "# 数字人口播视频方案\n## 素材与脚本审查\n## 优化后的完整口播稿\n## 分段、模型与制作方案\n## 图片计划与确认说明\n确认方案后生成真实图片。"
+        }
+      ],
+      "imagegen_called": false,
+      "paid_video_calls": 0
+    },
+    {
+      "type": "user_confirmation",
+      "stage": "plan_confirmed",
+      "intent": "confirm_plan"
+    },
+    {
+      "type": "assistant_response",
+      "stage": "awaiting_image_confirmation",
+      "surface": "generated_image",
+      "content": [
+        {
+          "type": "generated_image",
+          "role": "video_source",
+          "usage": "video_payload",
+          "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      ],
+      "imagegen_called": true,
+      "paid_video_calls": 0
+    },
+    {
+      "type": "user_confirmation",
+      "stage": "production_authorized",
+      "intent": "confirm_images_and_start",
+      "confirmed_asset_digests": [
+        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      ]
+    },
+    {
+      "type": "workflow_execution",
+      "stage": "production_authorized",
+      "actions": [
+        "prepare",
+        "preflight",
+        "confirm",
+        "submit",
+        "poll",
+        "finalize",
+        "review",
+        "quality_regeneration",
+        "delivery"
+      ],
+      "paid_video_calls": 2,
+      "base_paid_request_count": 1
+    }
+  ]
+}

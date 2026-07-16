@@ -1,0 +1,44 @@
+{
+  "trace_id": "real-codex-shape-redacted",
+  "events": [
+    {
+      "type": "assistant_message",
+      "surface": "progress",
+      "text": "我会先完成方案并生成真实首帧。"
+    },
+    {
+      "type": "tool_call",
+      "name": "functions.exec",
+      "input_markers": [
+        "text(proposal)",
+        "tools.image_gen__imagegen",
+        "generatedImage(result)"
+      ]
+    },
+    {
+      "type": "tool_output",
+      "surface": "collapsible_tool_output",
+      "content": [
+        {
+          "type": "text",
+          "text": "# 数字人口播视频方案\n## 素材与脚本审查\n## 优化后的完整口播稿\n## 分段、模型与制作方案\n## 一次确认"
+        }
+      ]
+    },
+    {
+      "type": "tool_output",
+      "surface": "generated_image",
+      "content": [
+        {
+          "type": "generated_image",
+          "role": "video_source"
+        }
+      ]
+    },
+    {
+      "type": "assistant_message",
+      "surface": "primary_assistant_response",
+      "text": ""
+    }
+  ]
+}

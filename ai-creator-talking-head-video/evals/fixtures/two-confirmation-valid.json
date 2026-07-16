@@ -1,0 +1,85 @@
+{
+  "trace_id": "two-confirmation-valid",
+  "events": [
+    {
+      "type": "assistant_response",
+      "stage": "awaiting_plan_confirmation",
+      "surface": "primary_assistant_response",
+      "duration_plan_digest": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "content": [
+        {
+          "type": "proposal_text",
+          "text": "# 数字人口播视频方案\n## 素材与脚本审查\n## 优化后的完整口播稿\n## 分段、模型与制作方案\n## 图片计划与确认说明\n确认方案后，我会生成视频真实使用的数字人图、首帧图或必要分镜图供你确认。"
+        }
+      ],
+      "imagegen_called": false,
+      "paid_video_calls": 0,
+      "state": {
+        "proposal_delivered": true,
+        "plan_confirmed": false,
+        "image_assets_confirmed": false,
+        "paid_video_authorized": false
+      }
+    },
+    {
+      "type": "user_confirmation",
+      "stage": "plan_confirmed",
+      "intent": "confirm_plan",
+      "confirmed_duration_plan_digest": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    },
+    {
+      "type": "assistant_response",
+      "stage": "awaiting_image_confirmation",
+      "surface": "generated_image",
+      "content": [
+        {
+          "type": "generated_image",
+          "role": "video_source",
+          "usage": "video_payload",
+          "sha256": "8c7df1d3c2c42879a3c0b09d676008398c7df1d3c2c42879a3c0b09d67600839"
+        }
+      ],
+      "imagegen_called": true,
+      "paid_video_calls": 0,
+      "state": {
+        "proposal_delivered": true,
+        "plan_confirmed": true,
+        "image_assets_confirmed": false,
+        "paid_video_authorized": false
+      }
+    },
+    {
+      "type": "user_confirmation",
+      "stage": "production_authorized",
+      "intent": "confirm_images_and_start",
+      "confirmed_duration_plan_digest": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "confirmed_asset_digests": [
+        "8c7df1d3c2c42879a3c0b09d676008398c7df1d3c2c42879a3c0b09d67600839"
+      ]
+    },
+    {
+      "type": "workflow_execution",
+      "stage": "production_authorized",
+      "actions": [
+        "prepare",
+        "preflight",
+        "confirm",
+        "submit",
+        "poll",
+        "finalize",
+        "review",
+        "local_postprocess_if_needed",
+        "delivery"
+      ],
+      "paid_video_calls": 3,
+      "base_paid_request_count": 3,
+      "duration_plan_digest": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "state": {
+        "proposal_delivered": true,
+        "plan_confirmed": true,
+        "image_assets_confirmed": true,
+        "paid_video_authorized": true
+      }
+    }
+  ]
+}

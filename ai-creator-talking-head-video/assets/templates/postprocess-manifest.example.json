@@ -1,0 +1,35 @@
+{
+  "version": "1.0",
+  "status": "completed_pending_review",
+  "contract_digest": "production-contract digest; never replace it with a post-edit digest",
+  "base_paid_request_count": 2,
+  "paid_video_requests_added": 0,
+  "paid_submission_attempts_before": 2,
+  "paid_submission_attempts_after": 2,
+  "operations": [
+    {
+      "type": "local_stitch",
+      "paid_api_call": false,
+      "tail_trim_enabled": true
+    },
+    {
+      "type": "local_technical_and_visual_review",
+      "paid_api_call": false
+    },
+    {
+      "type": "optional_confirmed_postproduction_subtitle_burn",
+      "paid_api_call": false,
+      "enabled": false
+    }
+  ],
+  "final_video": {
+    "path": "/absolute/project/final.mp4",
+    "sha256": "64-character sha256"
+  },
+  "stitch_report": {
+    "path": "/absolute/project/final.stitch-report.json",
+    "sha256": "64-character sha256"
+  },
+  "subtitle_policy": "default_disabled_no_srt_no_burn OR confirmed_postproduction_burn_only_after_clean_provider_review",
+  "recorded_at": 0
+}

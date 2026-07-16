@@ -1,0 +1,377 @@
+{
+  "skill_name": "ai-creator-talking-head-video",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "我最近做 AI 工具类短视频播放量不好，先帮我做 6 个抖音选题方向。不要直接写完整脚本，要说明每个选题为什么值得做、适合谁看、前 3 秒钩子是什么。",
+      "expected_output": "Uses topic_planning, gives multiple topic angles with audience, platform fit, hook, value, and asks user to choose before final script.",
+      "files": [],
+      "expectations": [
+        "Output is not only titles",
+        "Output explains why each topic is worth making",
+        "Output asks for topic confirmation before writing the full script"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "我有一段 60 秒中文口播草稿，要做成小红书数字人口播视频。请先专业审查并改成平台化完整口播稿，再给数字人形象和场景建议。不要字幕，只需要问我要不要特效。首轮先出完整文字方案，不要调用 imagegen，也不要直接调用视频接口。",
+      "expected_output": "Uses script_rewrite plus avatar_talking_head, audits the supplied draft, includes a complete professionally optimized spoken script, title, hook, body, transitions, CTA, avatar, scene, explicit subtitles-disabled choice with Provider no-text policy, and effects choice before any image generation.",
+      "files": [],
+      "expectations": [
+        "Output audits the supplied draft and includes the full optimized production-ready spoken script, not only a structure",
+        "Output includes avatar and scene plan",
+        "Output fixes subtitles disabled and asks only whether effects are enabled",
+        "Output does not call imagegen in the first response",
+        "Output does not call paid video API before confirmation"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "我已经有口播 mp4、音频和 srt 字幕，想保留原口播主体，SRT 只用来理解时间线，只自动补无文字 B-roll 和 9:16/16:9 两个版本。帮我给完整剪辑方案。",
+      "expected_output": "Uses hybrid_broll_edit, keeps original media, does not force TTS, uses SRT only as offline transcript reference, and plans non-text B-roll plus multi-ratio outputs without captions/cards.",
+      "files": [],
+      "expectations": [
+        "Output prioritizes existing audio/video and uses subtitles only as offline transcript reference",
+        "Output does not force TTS",
+        "Output includes B-roll and multi-platform packaging plan"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "我要做一个 60 秒数字人口播视频，但当前视频模型一次最多只能生成 15 秒。我担心角色和场景不一致。请先审查怎么用同一个数字人参考图、首帧/尾帧目标图、多宫格分镜图来做方案；如果要分多段生成，也要保持一样的角色、场景和提示词规则，最后再拼成完整视频。不要直接调用付费接口。",
+      "expected_output": "Uses avatar_talking_head plus longform_editing, explains duration splitting by model limit, distinguishes single source/first-frame routes from multi-reference routes, reuses one visual bible and confirmed source assets, plans per-segment generation, dry-run inspection, polling, and stitching.",
+      "files": [],
+      "expectations": [
+        "Output identifies the model duration limit and plans multiple segments",
+        "Output distinguishes video_source/first_frame, last_frame, storyboard_sheet, and segment_source roles",
+        "Output does not treat a storyboard sheet as the only source image for a single-image route",
+        "Output preserves one digital-human identity, scene, camera style, zero-written-text rule, aspect ratio, and resolution",
+        "Output includes dry-run and asset trace inspection before paid generation",
+        "Output includes stitching with scripts/stitch_clips.py after all clips are downloaded"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "我上传了一份企业客服 FAQ 和一份新员工培训 PPT，想做成 2 条无字幕数字人口播视频：一条给客户解释售后流程，一条给新员工做入职培训。请先分析素材和业务场景，给专业视频方案、数字人形象、B-roll、风险边界和验收指标。不要直接调用付费视频接口。",
+      "expected_output": "Uses business scenario routing before the normal content modes. Separates customer service FAQ from enterprise training, explains intent, target viewers, success metrics, compliance/risk boundaries, script structure, avatar/scene choices, non-text B-roll, explicit subtitles-disabled choice, Provider no-text policy, assets to confirm, and confirmation gates.",
+      "files": [],
+      "expectations": [
+        "Output identifies two different business scenario routes instead of one generic talking-head plan",
+        "Output states user intent, target viewer, success metric, and risk boundary for each video",
+        "Output maps FAQ content to customer service structure and PPT content to training structure",
+        "Output includes avatar, scene, optional non-text B-roll, explicit subtitle choice, Provider no-text rule, generated/reference image plan, and the two confirmation gates",
+        "Output does not call paid video API before confirmation"
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "我要做 45 秒数字人口播，但模型一次最多 15 秒。我担心 15 秒片段文案太短，数字人结尾空停；也担心只生成了部分片段就被当成完成。请给生成前和生成后的专业流程，不要直接调用付费接口。",
+      "expected_output": "Plans the minimum number of clips using model-supported request slots, preserves complete speech, allows short complete narration with verified idle-tail trimming, reuses the same visual_bible/assets, stitches only after all clips exist, and runs review_render.py before delivery.",
+      "files": [],
+      "expectations": [
+        "Output requires per-segment script_pacing or spoken-duration calibration before paid generation",
+        "Output selects the smallest supported request slot or trims verified idle tail when a complete clip has less than 15 seconds of narration, without adding filler or requesting another approval",
+        "Output does not call partial output complete when clips are missing",
+        "Output includes review_render.py or an equivalent final-review step after stitching",
+        "Output includes tail-silence, duration, missing-clip, and freeze checks"
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "我已经先确认了制作方案，又确认了实际生成的图片并要求开始制作。请说明你会如何在后台 dry-run、核对资产和模型字段，然后直接继续生成，不要让我重复确认同一套内容。",
+      "expected_output": "Runs preflight/dry-run after the second visible confirmation, verifies exact image digests, asset_trace, model, and request count, then creates the hash-bound confirmation file without another user approval when unchanged.",
+      "files": [],
+      "expectations": [
+        "Output requires dry-run before paid generation but no repeated unchanged user confirmation",
+        "Output mentions asset_trace and selected model fields",
+        "Output requires a confirmation file, not only a manual confirmed flag",
+        "Output refuses paid generation when script_pacing or script_boundary is not safe"
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "请读取提供的新员工培训页和客服 FAQ，分别做口播方案。政策、步骤和时效都不能编造，每条事实必须能回到页码或 FAQ 编号。",
+      "expected_output": "Creates two scenario-specific proposals and a machine-checkable source_fact_map. Facts without source evidence remain blocked or need confirmation.",
+      "files": [
+        "evals/fixtures/training-ppt-pages.json",
+        "evals/fixtures/customer-faq.json"
+      ],
+      "expectations": [
+        "Output contains source_fact_map entries with fact_id and source_locator",
+        "Training facts point to exact page numbers and FAQ facts point to exact FAQ ids",
+        "Output does not invent a fixed FAQ processing time",
+        "Missing facts are marked needs_user_confirmation or missing_source"
+      ]
+    },
+    {
+      "id": 9,
+      "prompt": "我同时有已经剪好的口播 MP4、外部配音和 SRT。请分别说明保留原视频加 B-roll，以及用外部配音重新生成数字人的两条路线。",
+      "expected_output": "Separates existing-video enhancement from external-audio-driven avatar generation and explicitly names desired_output, speech_source, and timing_authority for both.",
+      "files": ["evals/fixtures/provided.srt"],
+      "expectations": [
+        "Existing-video route uses the MP4 as timing_authority and does not regenerate the speaker",
+        "New-avatar route uses external audio as timing_authority and chooses an audio-input model",
+        "User SRT is used only as offline transcript/reference material and never sent or rendered",
+        "Frame-accurate lip sync is not promised without verified provider evidence"
+      ]
+    },
+    {
+      "id": 10,
+      "prompt": "我已经确认 45 秒三段数字人口播方案。请走完整 dry-run，但确认后我可能会换一张数字人图。说明系统应该怎么防止旧确认继续付费生成。",
+      "expected_output": "Uses workflow preflight and production-contract fingerprints. Any plan, model, asset, or dry-run change invalidates confirmation before key lookup/network access.",
+      "files": ["evals/fixtures/segments-45s.json"],
+      "expectations": [
+        "Output uses workflow_engine.py preflight and production-contract.json",
+        "Confirmation includes the contract digest",
+        "Changing the avatar image invalidates confirmation",
+        "Paid generation cannot use a manual confirmed flag"
+      ]
+    },
+    {
+      "id": 11,
+      "prompt": "三段视频只下载了前两段，但已经有一个 30 秒预览。请告诉我现在是否可以交付，并给出继续执行和最终验收条件。",
+      "expected_output": "Labels the file partial-preview, resumes only missing work without duplicating completed submissions, and requires technical plus visual pass before delivery-manifest.json.",
+      "files": [],
+      "expectations": [
+        "Output explicitly says the 30-second preview is not final delivery",
+        "Resume skips submitted/downloaded/verified jobs",
+        "Missing clips block finalize",
+        "Delivery requires final-review.json pass, visual-review.json pass, and delivery-manifest.json pass"
+      ]
+    },
+    {
+      "id": 12,
+      "prompt": "三段视频都已付费提交，查询第一段结果时遇到一次 SSL/网络中断，另外两段已下载。请继续处理，但绝对不能再次付费生成。",
+      "expected_output": "Treats the polling network error as retryable, reuses the existing request id, leaves the paid submission counter unchanged, and never calls the generation submit endpoint again.",
+      "files": [],
+      "expectations": [
+        "Network or polling timeout is distinguished from provider-declared generation failure",
+        "Existing request_id is polled again without a new generation submission",
+        "jobs.json paid_submission_attempts remains unchanged",
+        "Provider-declared terminal failure is not silently retried"
+      ]
+    },
+    {
+      "id": 13,
+      "prompt": "45 秒三段中文数字人口播已经生成。脚本几乎没有标点，第二段说完后有 1.6 秒静音。不要添加字幕，请完成拼接和最终验收。",
+      "expected_output": "Keeps subtitles disabled, safely trims excessive model-generated tail silence while preserving the original clip, stitches clean segments, and requires technical plus visual/content pass with no_generated_text=true before delivery.",
+      "files": [
+        "evals/fixtures/segments-45s.json"
+      ],
+      "expectations": [
+        "No SRT/VTT or captioned MP4 is generated",
+        "Tail trim keeps a short natural pause and records the edit in final.stitch-report.json",
+        "Postprocess manifest contains no subtitle generation or burn operation",
+        "Visual review confirms no_generated_text and spoken-content completeness",
+        "delivery-manifest.json is written only after every gate passes"
+      ]
+    },
+    {
+      "id": 14,
+      "prompt": "我要生成 15 秒企业培训数字人口播。不要字幕，不要特效，不要 B-roll，只保留视频模型生成的完整视频。",
+      "expected_output": "Records duration=15, subtitle disabled, effects disabled, model_output_only, one segment, and one paid request; the verified generated clip is delivered without visual postproduction.",
+      "files": [],
+      "expectations": [
+        "Output records explicit no-subtitle and no-effect choices",
+        "Output creates exactly one segment because 15 seconds fits the model limit",
+        "Output forbids B-roll, title cards, cutaways, masks, and generated text",
+        "Output preserves the verified model clip without visual postproduction"
+      ]
+    },
+    {
+      "id": 15,
+      "prompt": "我要生成 15 秒客服 FAQ 数字人口播。即使我临时提出想要白色字幕，也请按当前 Skill 的无字幕交付规则执行，不要其他特效。",
+      "expected_output": "Keeps subtitles disabled because this user explicitly requested the no-subtitle rule, records effects disabled, forbids Provider-generated text and local subtitle burning for this project, and plans one clean MP4 delivery.",
+      "files": [],
+      "expectations": [
+        "subtitle_plan.enabled is false and subtitle choice is disabled",
+        "Subtitle files are not sent to Provider and no caption burn is planned",
+        "No B-roll or title card is added",
+        "Visual review requires no_generated_text=true"
+      ]
+    },
+    {
+      "id": 16,
+      "prompt": "我确认最终时长是 15 秒，模型最长也是 15 秒，脚本可以在 15 秒内完整讲完。请不要拆成多段。",
+      "expected_output": "Creates one shot with segmentation_reason=single_segment_within_model_limit and does not invent extra segments.",
+      "files": [],
+      "expectations": [
+        "Duration source is user_confirmed",
+        "Segment count is exactly one",
+        "Paid request count is exactly one",
+        "The script is checked for pacing before submission"
+      ]
+    },
+    {
+      "id": 17,
+      "prompt": "我确认要做 40 秒产品讲解，当前模型每段最长 15 秒。请按完整句子拆段并拼接，不要插入其他图片，字幕和特效都关闭。",
+      "expected_output": "Splits the confirmed 40 seconds only because it exceeds the model limit, preserves one visual bible/source image, stitches generated clips, and inserts no other media.",
+      "files": [],
+      "expectations": [
+        "Segmentation reason is confirmed_duration_exceeds_model_limit",
+        "The minimum paid segment count is three and the legal request slots are 15 plus 15 plus 10 seconds",
+        "Every non-final segment ends at a complete sentence",
+        "No B-roll, title card, mask, or subtitle is added",
+        "Only generated clips are stitched in order"
+      ]
+    },
+    {
+      "id": 18,
+      "prompt": "请读取提供的产品素材说明和数字人参考信息，目标是抖音 30 秒知识分享口播。原稿是：‘我们产品绝对能提升百分之八十效率，任何公司都能零培训上手，而且永远不会出错。今天给大家介绍一下我们的产品，它真的非常好，非常强大，大家赶快用。’请按 skill 制作；如原稿不专业或不适合 30 秒，请基于素材专业优化。第一条回复先给我完整文字视频方案和优化后的完整口播稿；我确认方案后，再生成视频真实会使用的数字人源图/首帧和必要分镜图供我确认。不要调用视频接口。",
+      "expected_output": "The first response reads and inventories the supplied material/reference information, diagnoses unsupported claims and weak platform/pacing structure, and provides a complete optimized script and full text proposal without imagegen. After plan confirmation, the next response uses Codex built-in gpt-image-2 for real production images and waits for image confirmation. No paid video call occurs before the second confirmation.",
+      "files": [
+        "evals/fixtures/knowledge-product-material.json"
+      ],
+      "expectations": [
+        "First assistant turn is a complete textual production proposal and is not image-only",
+        "The first response includes the complete text plan on the primary assistant response surface and does not call imagegen",
+        "Output inventories each supplied asset and explains its planned use",
+        "Output diagnoses unsupported absolute claims, weak hook, repetition, CTA, platform fit, and duration/pacing",
+        "Output contains the full professionally optimized verbatim script, not only a script outline",
+        "Unsupported metrics and guarantees are removed or marked as needing evidence",
+        "Output includes duration/pacing, avatar/scene/camera, subtitle choice plus Provider no-text rule, effects choice, planned image prompts and payload/preview roles, model route, segment count, and paid request count",
+        "After plan confirmation, the next assistant response uses built-in gpt-image-2 for real video payload images and waits for image confirmation",
+        "No paid video API is called before confirmation"
+      ]
+    },
+    {
+      "id": 19,
+      "prompt": "一个两段拼接的数字人口播在第二段开头把‘目前’听成了‘前’，请比较原始 shot_02、规范化片段、拼接报告和最终视频，判断是模型漏读、裁剪、淡入还是编码边界问题，并修复后续工作流。不要重新付费生成没有问题的片段。",
+      "expected_output": "Uses isolated-source versus final-boundary evidence, distinguishes trim/drop from onset attenuation, blocks overloaded segments above 95% spoken fill, preserves 0.3-0.5s speech-safety head/tail pauses, stitches PCM intermediates without per-clip fades/crossfades and with one final AAC encode, and reviews incoming first-word onset before delivery.",
+      "files": [],
+      "expectations": [
+        "Output checks clip_edits and packet/timeline evidence before claiming the character was trimmed",
+        "Output compares the incoming source clip head with the final boundary instead of checking only the outgoing tail",
+        "Segments above 95 percent spoken fill are blocked as too_long",
+        "Segment prompts reserve a clean head/tail pause and require the complete first and final words",
+        "Stitching applies no per-clip head fade or crossfade and uses PCM intermediates with one final AAC encode",
+        "A compound Chinese ASR token alone is not accepted as proof that every character onset is intact",
+        "If only the final edit is defective, intact source clips are restitched without paid regeneration",
+        "If the isolated source clip is materially defective, qualified delivery is blocked and no second paid POST is made"
+      ]
+    },
+    {
+      "id": 20,
+      "prompt": "请用我提供的口播稿和人物素材制作数字人视频。第一条回复必须让我看到专业视频方案和优化后的完整口播稿，不能只回复一张图片；我确认方案后再生成首帧或必要分镜供我确认，确认图片后自动制作。",
+      "expected_output": "Uses a two-confirmation flow: complete text proposal first with no imagegen, built-in gpt-image-2 production images only after plan confirmation, and paid automatic production only after the exact images are confirmed.",
+      "files": [],
+      "expectations": [
+        "First response contains complete proposal text and does not call imagegen or a paid video API",
+        "proposal.md contains material review, full optimized spoken script, duration/segments, visual route, and paid cap",
+        "At least one actual generated video_source, first_frame, or segment_source image is marked video_payload",
+        "Any multi-grid storyboard is marked preview_only and is not the sole single-image video input",
+        "After plan confirmation, built-in image_gen/image2 creates the video payload image; functions.exec text is not accepted as proposal delivery",
+        "No confirmation-board artifacts are generated",
+        "The second confirmation approves exact image digests and starts automatic production without a third routine confirmation"
+      ]
+    },
+    {
+      "id": 21,
+      "prompt": "两段数字人口播已生成并通过技术和画面检查。第二段开头原稿是‘更值得关注的是 Ultra’，多次 ASR 对前面的连接短语给出不同乱码，但 Ultra、多个智能体并行协作等核心事实和后续口播都清楚，人工听感可理解，用户没有要求逐字一致。再次生成会增加 API 成本和等待时间。请决定应交付还是重生，并说明记录方式。",
+      "expected_output": "Uses critical_facts_exact while allowing harmless meaning-preserving connective wording, separates ASR uncertainty from actual lip sync, compares isolated source and final boundary, classifies the result as pass_with_notes, records structured minor discrepancies, and delivers without paid regeneration.",
+      "files": [],
+      "expectations": [
+        "Defaults factual creator content to critical_facts_exact while treating the connective phrase as non-critical wording",
+        "A single or unstable ASR mismatch is not automatic permission for paid regeneration",
+        "The isolated source segment is compared with the final stitched boundary before deciding the repair type",
+        "Critical terms, core facts, meaning, and intelligibility are checked separately from exact connective wording",
+        "Pronunciation or transcript uncertainty does not by itself set lip_sync_acceptable to false",
+        "The result is pass_with_notes with structured minor_discrepancies and empty material_discrepancies",
+        "delivery-manifest status remains pass and delivery_classification is pass_with_notes",
+        "The normal contract has repair_reserve zero and per_shot_repair_limit zero, and no paid regeneration is used"
+      ]
+    },
+    {
+      "id": 22,
+      "prompt": "请把提供的口播稿做成抖音 30 秒数字人口播。当前视频模型单次可选时长只有 4、6、8、10、12、15 秒，最多 15 秒。原稿有三个自然段，但请优先控制等待和调用成本，给出首轮文字方案，不要调用视频接口。",
+      "expected_output": "Reviews and lightly optimizes the real Vibe Coding script, treats 30 seconds as the delivery maximum, uses the deterministic minimum-segment planner, and proposes exactly two 15-second provider requests rather than three paragraph-based requests.",
+      "files": [
+        "evals/fixtures/vibe-coding-30s-script.txt",
+        "evals/fixtures/vibe-coding-30s-optimized.txt"
+      ],
+      "expectations": [
+        "The full optimized script is estimated to fit the 30-second delivery window",
+      "The plan records delivery_max_seconds as 30 and keeps it unchanged",
+      "The minimum required segment count and base paid request count are both two",
+      "The two request_duration_seconds values are 15 and 15 and both belong to allowed_durations_seconds",
+      "The optimized script stays in the normal 85%-95% spoken-fill window, and a multi-segment plan below 75% is blocked before image or video spend",
+      "The plan separately records estimated natural pauses, estimated delivery, removable idle trim, and zero planned delivery overshoot",
+      "The three source paragraphs are reorganized into two complete spoken segments rather than three paid requests",
+      "Every non-final segment ends at a complete strong sentence; a comma or unfinished from-to clause is never mechanically changed into a period",
+      "The first proposal and later generation plan expose the same duration_plan_digest, and changing exact text or a request slot changes the digest",
+      "The real final MP4 is hard-blocked above 30 seconds except for the fixed one-frame container measurement allowance"
+      ]
+    },
+    {
+      "id": 23,
+      "prompt": "三段数字人口播已各提交一次。第一段的一次 Whisper 结果把‘企业管理者’识别成‘实验管理者’，但人工听感大意清楚；第三段画面有瑕疵。如果 Provider 后续又返回终止失败，也不要自动花钱返修。请给出处理和验收规则。",
+      "expected_output": "Keeps quality review, but authorizes zero paid repair: unstable or meaning-preserving speech is pass_with_notes, edit defects use local post-processing, material provider-output defects or terminal failure block qualified delivery, and no shot receives a second POST.",
+      "files": [],
+      "expectations": [
+        "max_paid_submissions equals the three base requests, repair_reserve is zero, and per_shot_repair_limit is zero",
+        "Each shot may be POSTed at most once regardless of ASR, quality review, or terminal provider status",
+        "Polling or downloading the same request_id may resume without changing paid_submission_attempts",
+        "Meaning-preserving or ASR-only uncertainty is delivered as pass_with_notes without paid regeneration",
+      "Local trim, restitch, and encode fixes are allowed and recorded in postprocess-manifest.json; only a Stage-B1-confirmed local subtitle burn is allowed",
+      "A material provider-output defect or terminal failure blocks qualified delivery and does not trigger a new POST",
+      "The confirmed paid contract, model snapshot, dry-run evidence, confirmation, and jobs contract digest remain immutable after submission",
+      "Final delivery requires exactly one attempt plus matching paid request, poll, request ID, contract, payload, clip path, and clip SHA-256 evidence for every verified base shot",
+      "A submit followed by terminal provider failure and resume still produces exactly one POST call"
+      ]
+    },
+    {
+      "id": 24,
+      "prompt": "两段数字人口播已经生成并拼接。第二段的视频模型自己在画面里写了一句中文，后期又准备烧录 SRT，导致文字重叠。以后取消字幕：生成提示词不允许任何画面文字，视频请求不传字幕，剪辑拼接也不添加字幕。请修正方案并说明验收。",
+      "expected_output": "Records subtitles disabled for this project, applies the fixed Provider no-text policy across prompt and payload, removes contradictory post-generation subtitle wording, performs no local subtitle burn, and blocks qualified delivery when Provider pixels contain text without automatically paying for regeneration.",
+      "files": [],
+      "expectations": [
+        "Segment prompt contains one unambiguous clean-frame contract and no sentence promising subtitles after generation",
+        "Prompt forbids subtitles, captions, lower thirds, title cards, labels, letters, numbers, logos, and watermarks in every language",
+        "subtitle_plan.enabled is false, requires_user_confirmation is false, and SRT/captioned output paths are empty",
+        "Every dry-run and paid request records subtitle_included_in_payload=false",
+        "finalize_project and finalize_postproduction do not generate or burn subtitles for this disabled plan",
+        "Visual review requires no_generated_text=true; embedded Provider text blocks qualified delivery",
+        "No extra confirmation and no automatic paid regeneration are introduced"
+      ]
+    },
+    {
+      "id": 25,
+      "prompt": "这份 30 秒数字人方案我确认，需要字幕。请不要让视频模型生成字幕，要适配抖音竖屏安全区。",
+      "expected_output": "Treats the message as Confirmation 1 plus subtitle opt-in, records user_plan_confirmation and postproduction_burn_only without a third confirmation, keeps Provider prompt/payload text-free, preflights local tools, reviews the clean MP4 first, then locally creates/burns captions with the vertical platform profile and reviews the captioned MP4.",
+      "files": [],
+      "expectations": [
+        "The confirmation records subtitle_plan.enabled=true, request_source=user_plan_confirmation, and confirmation_status=confirmed",
+        "Every Provider prompt and payload remains text-free and subtitle_included_in_payload=false",
+        "Local subtitle runtime is checked before paid video generation",
+        "Clean Provider output passes no_generated_text=true before subtitle generation or burn",
+        "The caption burn uses the Douyin vertical profile, transparent background, at most two lines, and no paid API call",
+        "No third confirmation and no additional paid video request are introduced"
+      ]
+    },
+    {
+      "id": 26,
+      "prompt": "需要字幕。",
+      "expected_output": "Updates the proposed subtitle choice but does not treat this standalone request as Confirmation 1; it keeps request_source default or confirmation pending and does not start image or paid video generation.",
+      "files": [],
+      "expectations": [
+        "A standalone subtitle request does not approve the complete Stage B1 plan",
+        "The plan remains awaiting plan confirmation",
+        "No image generation or paid video API starts"
+      ]
+    },
+    {
+      "id": 27,
+      "prompt": "方案已经确认并要求字幕。最终音频的本地小模型把‘企业管理者’识别成了‘实验管理者’，但确认稿写的是‘企业管理者’。请生成 YouTube 横屏字幕，并避免字幕过大遮脸。",
+      "expected_output": "Uses the confirmed script as caption words and final local audio only as cue timing, preserves raw ASR evidence, converts platform pixel targets into libass script coordinates, burns a transparent outlined YouTube-horizontal caption copy locally, and blocks delivery until representative frames prove readable safe placement.",
+      "files": [],
+      "expectations": [
+        "The final SRT contains 企业管理者 from the confirmed script and records lexical_source=confirmed_script",
+        "The raw mistaken ASR SRT is preserved with its own path and SHA-256 instead of replacing confirmed copy",
+        "Final subtitle cue timing comes from the final clean MP4 audio and ends no later than the verified video duration",
+        "The YouTube 16:9 profile is selected and target pixels are converted to libass script coordinates",
+        "Representative captioned frames show at most two lines, no caption bar, no face or mouth obstruction, and platform-safe margins",
+        "All subtitle generation and rerender operations record paid_api_call=false"
+      ]
+    }
+  ]
+}

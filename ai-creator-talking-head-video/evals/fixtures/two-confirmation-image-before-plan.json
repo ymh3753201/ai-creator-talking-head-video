@@ -1,0 +1,32 @@
+{
+  "trace_id": "two-confirmation-image-before-plan",
+  "events": [
+    {
+      "type": "assistant_response",
+      "stage": "awaiting_plan_confirmation",
+      "surface": "primary_assistant_response",
+      "content": [
+        {
+          "type": "proposal_text",
+          "text": "# 数字人口播视频方案\n## 素材与脚本审查\n## 优化后的完整口播稿\n## 分段、模型与制作方案\n## 图片计划与确认说明\n确认方案后，我会生成视频真实使用的数字人图、首帧图或必要分镜图供你确认。"
+        }
+      ],
+      "imagegen_called": false,
+      "paid_video_calls": 0
+    },
+    {
+      "type": "tool_output",
+      "stage": "awaiting_image_confirmation",
+      "surface": "generated_image",
+      "content": [
+        {
+          "type": "generated_image",
+          "role": "video_source",
+          "usage": "video_payload",
+          "sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+        }
+      ],
+      "paid_video_calls": 0
+    }
+  ]
+}

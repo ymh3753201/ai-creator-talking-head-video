@@ -1,0 +1,22 @@
+{
+  "material_id": "KNOWLEDGE-PRODUCT-001",
+  "product_name": "内部知识检索助手",
+  "verified_capabilities": [
+    "支持检索企业已授权的内部资料",
+    "可以根据检索结果整理回答草稿"
+  ],
+  "unsupported_claims": [
+    "提升百分之八十效率",
+    "任何公司都能零培训上手",
+    "永远不会出错"
+  ],
+  "avatar_reference_notes": {
+    "identity": "原创可爱科技分享类女博主",
+    "clothing": "简洁浅色针织上衣",
+    "scene": "明亮桌面科技分享空间",
+    "rights_status": "original_virtual_avatar"
+  },
+  "target_platform": "douyin",
+  "target_duration_seconds": 30,
+  "source_limit": "不得把未提供证据的效率、零培训或零错误表述写成事实"
+}

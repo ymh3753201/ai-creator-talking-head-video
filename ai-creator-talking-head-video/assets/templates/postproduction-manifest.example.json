@@ -1,0 +1,27 @@
+{
+  "status": "revise",
+  "source_video_sha256": "",
+  "candidate_sha256": "",
+  "preserve_source_speech": true,
+  "subtitle_policy": "default_disabled OR confirmed_postproduction_burn_only",
+  "caption_mask_applied": false,
+  "all_operations_user_approved": false,
+  "editing_tool": "",
+  "operations": [
+    {
+      "type": "approved_non_text_broll_or_ratio_export",
+      "status": "planned",
+      "start_second": 0,
+      "end_second": 0,
+      "asset": "",
+      "notes": ""
+    },
+    {
+      "type": "postproduction_subtitle_burn",
+      "status": "planned",
+      "paid_api_call": false,
+      "enabled": false,
+      "notes": "Allowed only when Stage B1 recorded user_plan_confirmation; no caption background bar."
+    }
+  ]
+}
